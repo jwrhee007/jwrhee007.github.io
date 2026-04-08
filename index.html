@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ML Course Visual Notes</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+:root{--bg:#fafaf8;--card:#fff;--text:#1a1a1a;--sub:#6b6b6b;--border:#e8e6e1;--accent:#2563eb;--accent2:#0d9488;}
+@media(prefers-color-scheme:dark){:root{--bg:#18181b;--card:#27272a;--text:#f0f0ec;--sub:#a1a1aa;--border:#3f3f46;--accent:#60a5fa;--accent2:#2dd4bf;}}
+body{font-family:'Noto Sans KR',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;padding:3rem 1.5rem;}
+.container{max-width:720px;margin:0 auto;}
+h1{font-size:1.75rem;font-weight:700;margin-bottom:.5rem;letter-spacing:-.02em;}
+.subtitle{font-size:.95rem;color:var(--sub);margin-bottom:2.5rem;line-height:1.6;}
+.topic-list{display:flex;flex-direction:column;gap:12px;}
+.topic-card{display:flex;align-items:center;gap:16px;padding:1.25rem 1.5rem;background:var(--card);border:1px solid var(--border);border-radius:12px;text-decoration:none;color:var(--text);transition:border-color .2s,transform .15s;}
+.topic-card:hover{border-color:var(--accent);transform:translateY(-1px);}
+.topic-num{font-family:'JetBrains Mono',monospace;font-size:.8rem;font-weight:500;color:var(--accent);background:color-mix(in srgb,var(--accent) 10%,transparent);padding:6px 10px;border-radius:6px;min-width:32px;text-align:center;}
+.topic-info{flex:1;}
+.topic-title{font-size:1rem;font-weight:500;margin-bottom:2px;}
+.topic-desc{font-size:.82rem;color:var(--sub);}
+.topic-badge{font-size:.7rem;color:var(--accent2);background:color-mix(in srgb,var(--accent2) 10%,transparent);padding:3px 8px;border-radius:4px;white-space:nowrap;}
+.footer{margin-top:3rem;padding-top:1.5rem;border-top:1px solid var(--border);font-size:.8rem;color:var(--sub);text-align:center;}
+</style>
+</head>
+<body>
+<div class="container">
+  <h1>ML Course — Visual Notes</h1>
+  <p class="subtitle">각 토픽의 핵심 개념을 인터랙티브 시각 자료로 정리했습니다.<br>Korea University AI Convergence 대학원 과정</p>
+  <div class="topic-list">
+    <a href="topic0.html" class="topic-card">
+      <span class="topic-num">0</span>
+      <div class="topic-info">
+        <div class="topic-title">Introduction</div>
+        <div class="topic-desc">전통적 프로그래밍 vs ML, AI/ML/DL 관계</div>
+      </div>
+      <span class="topic-badge">2 visuals</span>
+    </a>
+    <a href="topic1.html" class="topic-card">
+      <span class="topic-num">1</span>
+      <div class="topic-info">
+        <div class="topic-title">Preliminaries</div>
+        <div class="topic-desc">PDF/CDF, 베이즈 정리, 사영, 가우시안 분포</div>
+      </div>
+      <span class="topic-badge">4 visuals</span>
+    </a>
+    <a href="topic2.html" class="topic-card">
+      <span class="topic-num">2</span>
+      <div class="topic-info">
+        <div class="topic-title">Supervised Learning & ERM</div>
+        <div class="topic-desc">손실 함수, True/Empirical Risk, Overfitting</div>
+      </div>
+      <span class="topic-badge">4 visuals</span>
+    </a>
+    <a href="topic3.html" class="topic-card">
+      <span class="topic-num">3</span>
+      <div class="topic-info">
+        <div class="topic-title">kNN & Bias-Variance Trade-off</div>
+        <div class="topic-desc">결정 경계, 과녁 비유, 차원의 저주</div>
+      </div>
+      <span class="topic-badge">4 visuals</span>
+    </a>
+    <a href="topic4.html" class="topic-card">
+      <span class="topic-num">4</span>
+      <div class="topic-info">
+        <div class="topic-title">Estimating Probabilities from Data</div>
+        <div class="topic-desc">MLE, MAP, Beta 분포, Gradient Descent</div>
+      </div>
+      <span class="topic-badge">5 visuals</span>
+    </a>
+  </div>
+  <div class="footer">Built with Claude · GitHub Pages</div>
+</div>
+</body>
+</html>
