@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Topic 1. Preliminaries — ML Visual Notes</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+:root{--bg:#fafaf8;--card:#fff;--text:#1a1a1a;--sub:#6b6b6b;--border:#e8e6e1;--accent:#2563eb;--accent2:#0d9488;--code-bg:#f4f3ef;}
+@media(prefers-color-scheme:dark){:root{--bg:#18181b;--card:#27272a;--text:#f0f0ec;--sub:#a1a1aa;--border:#3f3f46;--accent:#60a5fa;--accent2:#2dd4bf;--code-bg:#1f1f23;}}
+body{font-family:'Noto Sans KR',sans-serif;background:var(--bg);color:var(--text);padding:2rem 1.5rem;line-height:1.7;}
+.container{max-width:720px;margin:0 auto;}
+.back{font-size:.85rem;color:var(--sub);text-decoration:none;display:inline-flex;align-items:center;gap:4px;margin-bottom:1.5rem;}
+.back:hover{color:var(--accent);}
+h1{font-size:1.5rem;font-weight:700;margin-bottom:.25rem;}
+.topic-sub{font-size:.9rem;color:var(--sub);margin-bottom:2rem;}
+.vis-section{margin-bottom:3rem;}
+.vis-title{font-size:1.05rem;font-weight:500;margin-bottom:.5rem;padding-left:12px;border-left:3px solid var(--accent);}
+.vis-desc{font-size:.85rem;color:var(--sub);margin-bottom:1rem;}
+.vis-card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:1.5rem;overflow:hidden;}
+svg text{font-family:'Noto Sans KR','Helvetica Neue',sans-serif;}
+.t{font-size:14px;fill:var(--text);}
+.ts{font-size:12px;fill:var(--sub);}
+.th{font-size:14px;fill:var(--text);font-weight:500;}
+.arr{stroke:var(--sub);stroke-width:1.5;}
+.leader{stroke:var(--sub);stroke-width:0.5;stroke-dasharray:4 3;}
+.c-blue rect,.c-blue circle{fill:#E6F1FB;stroke:#185FA5;stroke-width:0.5;} .c-blue .th,.c-blue .t{fill:#0C447C;} .c-blue .ts{fill:#185FA5;}
+.c-teal rect{fill:#E1F5EE;stroke:#0F6E56;stroke-width:0.5;} .c-teal .th,.c-teal .t{fill:#085041;} .c-teal .ts{fill:#0F6E56;}
+.c-coral rect{fill:#FAECE7;stroke:#993C1D;stroke-width:0.5;} .c-coral .th,.c-coral .t{fill:#712B13;} .c-coral .ts{fill:#993C1D;}
+.c-gray rect{fill:#F1EFE8;stroke:#5F5E5A;stroke-width:0.5;} .c-gray .th,.c-gray .t{fill:#444441;} .c-gray .ts{fill:#5F5E5A;}
+@media(prefers-color-scheme:dark){
+  .c-blue rect,.c-blue circle{fill:#0C447C;stroke:#85B7EB;} .c-blue .th,.c-blue .t{fill:#B5D4F4;} .c-blue .ts{fill:#85B7EB;}
+  .c-teal rect{fill:#085041;stroke:#5DCAA5;} .c-teal .th,.c-teal .t{fill:#9FE1CB;} .c-teal .ts{fill:#5DCAA5;}
+  .c-coral rect{fill:#712B13;stroke:#F0997B;} .c-coral .th,.c-coral .t{fill:#F5C4B3;} .c-coral .ts{fill:#F0997B;}
+  .c-gray rect{fill:#444441;stroke:#B4B2A9;} .c-gray .th,.c-gray .t{fill:#D3D1C7;} .c-gray .ts{fill:#B4B2A9;}
+}
+.eq{font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--sub);background:var(--code-bg);padding:4px 10px;border-radius:6px;display:inline-block;}
+.ctrl-row{display:flex;align-items:center;gap:12px;margin-bottom:10px;font-size:13px;color:var(--sub);}
+.ctrl-row input[type=range]{flex:1;height:4px;-webkit-appearance:none;appearance:none;background:var(--border);border-radius:2px;outline:none;}
+.ctrl-row input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:16px;height:16px;border-radius:50%;background:var(--accent);cursor:pointer;}
+.val{font-size:14px;font-weight:500;color:var(--text);min-width:32px;text-align:right;}
+.case-label{font-size:13px;font-weight:500;color:var(--text);text-align:center;margin-bottom:2px;}
+.case-sub{font-size:11px;color:var(--sub);text-align:center;font-family:'JetBrains Mono',monospace;}
+.footer{margin-top:2rem;padding-top:1rem;border-top:1px solid var(--border);font-size:.8rem;color:var(--sub);display:flex;justify-content:space-between;}
+.footer a{color:var(--accent);text-decoration:none;}
+</style>
+</head>
+<body>
+<div class="container">
+<a href="index.html" class="back">← 목차로 돌아가기</a>
+<h1>Topic 1. Preliminaries</h1>
+<p class="topic-sub">확률과 분포, 기댓값과 공분산, 선형대수, 사영, 미적분</p>
+
+<!-- 1. PDF / CDF -->
+<div class="vis-section">
+  <div class="vis-title">PDF와 CDF의 관계</div>
+  <p class="vis-desc">슬라이더로 x를 움직여 보세요. PDF의 음영 면적(적분값)이 곧 CDF의 높이입니다.</p>
+  <div class="vis-card">
+    <div class="ctrl-row">
+      <span>x value</span>
+      <input type="range" id="xslider" min="-30" max="30" value="10" step="1">
+      <span class="val" id="xval">1.0</span>
+    </div>
+    <div style="display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap;">
+      <span class="eq" id="eq-pdf">f(1.0) = 0.242</span>
+      <span class="eq" id="eq-cdf">F(1.0) = P(X ≤ 1.0) = 0.841</span>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+      <div>
+        <div class="case-label">PDF  f(x)</div>
+        <div style="position:relative;height:190px;"><canvas id="pdfChart"></canvas></div>
+      </div>
+      <div>
+        <div class="case-label">CDF  F(x) = ∫f(t)dt</div>
+        <div style="position:relative;height:190px;"><canvas id="cdfChart"></canvas></div>
+      </div>
+    </div>
+    <div style="display:flex;justify-content:center;gap:16px;margin-top:10px;">
+      <span class="eq">CDF = ∫₋∞ˣ f(t) dt</span>
+      <span class="eq">PDF = dF/dx</span>
+    </div>
+  </div>
+</div>
+
+<!-- 2. Bayes' Theorem -->
+<div class="vis-section">
+  <div class="vis-title">베이즈 정리 — 스팸 필터 예제</div>
+  <p class="vis-desc">"Rolex"가 포함된 메일이 스팸일 확률을 Prior → Likelihood → Posterior 흐름으로 계산합니다.</p>
+  <div class="vis-card">
+    <svg width="100%" viewBox="0 0 680 460">
+      <defs><marker id="arr1" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M2 1L8 5L2 9" fill="none" stroke="context-stroke" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></marker></defs>
+      <!-- Email -->
+      <g class="c-gray"><rect x="30" y="180" width="85" height="44" rx="8"/><text class="th" x="72" y="202" text-anchor="middle" dominant-baseline="central">Email</text></g>
+      <!-- Arrows to Spam/Ham -->
+      <line x1="115" y1="192" x2="185" y2="100" stroke="var(--sub)" stroke-width="1" marker-end="url(#arr1)"/>
+      <line x1="115" y1="212" x2="185" y2="340" stroke="var(--sub)" stroke-width="1" marker-end="url(#arr1)"/>
+      <!-- Prior labels - positioned along arrows, clear of all boxes -->
+      <text class="th" x="120" y="138">P(spam) = 0.5</text>
+      <text class="th" x="120" y="286">P(ham) = 0.5</text>
+      <!-- Spam box -->
+      <g class="c-coral"><rect x="190" y="68" width="105" height="52" rx="8"/><text class="th" x="242" y="87" text-anchor="middle" dominant-baseline="central">Spam</text><text class="ts" x="242" y="106" text-anchor="middle" dominant-baseline="central">prior = 0.5</text></g>
+      <!-- Ham box -->
+      <g class="c-blue"><rect x="190" y="316" width="105" height="52" rx="8"/><text class="th" x="242" y="335" text-anchor="middle" dominant-baseline="central">Ham</text><text class="ts" x="242" y="354" text-anchor="middle" dominant-baseline="central">prior = 0.5</text></g>
+      <!-- Arrow Spam → Spam+Rolex -->
+      <line x1="295" y1="84" x2="420" y2="48" stroke="var(--sub)" stroke-width="1" marker-end="url(#arr1)"/>
+      <!-- Arrow Ham → Ham+Rolex -->
+      <line x1="295" y1="342" x2="420" y2="354" stroke="var(--sub)" stroke-width="1" marker-end="url(#arr1)"/>
+      <!-- Likelihood labels - right-aligned BEFORE destination boxes -->
+      <text class="th" x="408" y="82" text-anchor="end">P(Rolex|spam)</text>
+      <text class="t" x="408" y="98" text-anchor="end">= 0.125</text>
+      <text class="th" x="408" y="322" text-anchor="end">P(Rolex|ham)</text>
+      <text class="t" x="408" y="338" text-anchor="end">= 0.005</text>
+      <!-- Spam+Rolex joint -->
+      <g class="c-coral"><rect x="425" y="24" width="150" height="48" rx="8"/><text class="th" x="500" y="41" text-anchor="middle" dominant-baseline="central">Spam + Rolex</text><text class="ts" x="500" y="59" text-anchor="middle" dominant-baseline="central">0.5 × 0.125 = 0.0625</text></g>
+      <!-- Ham+Rolex joint -->
+      <g class="c-blue"><rect x="425" y="334" width="150" height="48" rx="8"/><text class="th" x="500" y="351" text-anchor="middle" dominant-baseline="central">Ham + Rolex</text><text class="ts" x="500" y="369" text-anchor="middle" dominant-baseline="central">0.5 × 0.005 = 0.0025</text></g>
+      <!-- Arrows to Posterior -->
+      <line x1="575" y1="58" x2="580" y2="162" stroke="var(--sub)" stroke-width="1" marker-end="url(#arr1)"/>
+      <line x1="575" y1="348" x2="580" y2="238" stroke="var(--sub)" stroke-width="1" marker-end="url(#arr1)"/>
+      <!-- Posterior -->
+      <g class="c-teal"><rect x="548" y="166" width="120" height="68" rx="8"/><text class="th" x="608" y="188" text-anchor="middle" dominant-baseline="central">Posterior</text><text class="ts" x="608" y="208" text-anchor="middle" dominant-baseline="central">P(spam|Rolex)</text><text class="th" x="608" y="226" text-anchor="middle" dominant-baseline="central">= 96.2%</text></g>
+      <!-- Formula bar -->
+      <g class="c-gray"><rect x="60" y="405" width="480" height="40" rx="8"/><text class="ts" x="300" y="429" text-anchor="middle" dominant-baseline="central">P(spam|Rolex) = 0.0625 / (0.0625 + 0.0025) = 0.0625 / 0.065 ≈ 0.962</text></g>
+    </svg>
+  </div>
+</div>
+
+<!-- 3. Projection -->
+<div class="vis-section">
+  <div class="vis-title">벡터 사영 (Projection)</div>
+  <p class="vis-desc">벡터 x를 b가 span하는 직선 U에 사영할 때, 잔차 벡터는 b에 수직입니다.</p>
+  <div class="vis-card">
+    <svg width="100%" viewBox="0 0 680 400">
+      <defs>
+        <marker id="arr2" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M2 1L8 5L2 9" fill="none" stroke="context-stroke" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></marker>
+        <marker id="aB" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M2 1L8 5L2 9" fill="none" stroke="#378ADD" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></marker>
+        <marker id="aC" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M2 1L8 5L2 9" fill="none" stroke="#D85A30" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></marker>
+        <marker id="aT" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M2 1L8 5L2 9" fill="none" stroke="#1D9E75" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></marker>
+        <marker id="aR" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M2 1L8 5L2 9" fill="none" stroke="#993C1D" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></marker>
+      </defs>
+      <!-- Origin -->
+      <circle cx="100" cy="300" r="4" fill="var(--text)"/>
+      <text class="th" x="88" y="318" text-anchor="middle">O</text>
+      <!-- Subspace line U (extended dashed) -->
+      <line x1="30" y1="333" x2="560" y2="86" stroke="var(--sub)" stroke-width="0.5" stroke-dasharray="4 4" opacity="0.5"/>
+      <text class="ts" x="560" y="78">U = span(b)</text>
+      <!-- Vector b (along subspace, ~25° up) -->
+      <line x1="100" y1="300" x2="375" y2="172" stroke="#378ADD" stroke-width="2" marker-end="url(#aB)" fill="none"/>
+      <text class="th" x="260" y="255" style="fill:#378ADD" text-anchor="middle">b</text>
+      <!-- Vector x (much steeper, ~61° up) -->
+      <line x1="100" y1="300" x2="250" y2="30" stroke="#D85A30" stroke-width="2" marker-end="url(#aC)" fill="none"/>
+      <text class="th" x="155" y="145" style="fill:#D85A30" text-anchor="middle">x</text>
+      <!-- Projection point on U -->
+      <circle cx="327" cy="194" r="5" fill="#1D9E75"/>
+      <!-- Projection vector (O to proj) -->
+      <line x1="100" y1="300" x2="322" y2="197" stroke="#1D9E75" stroke-width="2.5" marker-end="url(#aT)" fill="none"/>
+      <text class="th" x="190" y="275" style="fill:#1D9E75" text-anchor="middle">π(x) = λb</text>
+      <!-- Residual vector (proj to x) — clearly perpendicular to b -->
+      <line x1="327" y1="194" x2="254" y2="35" stroke="#993C1D" stroke-width="1.8" stroke-dasharray="5 3" marker-end="url(#aR)" fill="none"/>
+      <text class="th" x="310" y="100" style="fill:#993C1D" text-anchor="start">x − π(x)</text>
+      <!-- Right angle marker (20px arms, clearly visible) -->
+      <path d="M 319 178 L 336 170 L 344 187" fill="none" stroke="var(--text)" stroke-width="1.5"/>
+      <!-- Angle ω arc -->
+      <path d="M 150 274 A 60 60 0 0 1 140 262" fill="none" stroke="var(--sub)" stroke-width="1"/>
+      <text class="ts" x="155" y="260">ω</text>
+      <!-- Formula boxes -->
+      <g class="c-teal"><rect x="40" y="348" width="180" height="36" rx="8"/><text class="ts" x="130" y="370" text-anchor="middle" dominant-baseline="central">λ = bᵀx / bᵀb</text></g>
+      <g class="c-gray"><rect x="250" y="348" width="180" height="36" rx="8"/><text class="ts" x="340" y="370" text-anchor="middle" dominant-baseline="central">π(x) = (bbᵀ/bᵀb) x</text></g>
+      <g class="c-coral"><rect x="460" y="348" width="180" height="36" rx="8"/><text class="ts" x="550" y="370" text-anchor="middle" dominant-baseline="central">x − π(x) ⊥ b</text></g>
+    </svg>
+  </div>
+</div>
+
+<!-- 4. Multivariate Gaussian -->
+<div class="vis-section">
+  <div class="vis-title">다변량 가우시안 분포 — 공분산 행렬에 따른 등고선</div>
+  <p class="vis-desc">Σ의 구조에 따라 등고선 형태가 달라집니다. 원형, 축 방향 타원, 기울어진 타원 등.</p>
+  <div class="vis-card">
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
+      <div><div class="case-label">Spherical (independent)</div><div class="case-sub">Σ = [[1,0],[0,1]]</div><canvas id="c1" width="300" height="300" style="width:100%;"></canvas></div>
+      <div><div class="case-label">Diagonal (different var.)</div><div class="case-sub">Σ = [[1,0],[0,4]]</div><canvas id="c2" width="300" height="300" style="width:100%;"></canvas></div>
+      <div><div class="case-label">Positive correlation</div><div class="case-sub">Σ = [[1,0.8],[0.8,1]]</div><canvas id="c3" width="300" height="300" style="width:100%;"></canvas></div>
+      <div><div class="case-label">Negative correlation</div><div class="case-sub">Σ = [[1,−0.8],[−0.8,1]]</div><canvas id="c4" width="300" height="300" style="width:100%;"></canvas></div>
+    </div>
+  </div>
+</div>
+
+<div class="footer">
+  <a href="topic0.html">← Topic 0</a>
+  <a href="topic2.html">Topic 2 →</a>
+</div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<script>
+/* ===== PDF/CDF Interactive ===== */
+function normalPDF(x){return Math.exp(-0.5*x*x)/Math.sqrt(2*Math.PI);}
+function normalCDF(x){let t=1/(1+0.2316419*Math.abs(x));let d=0.3989422804*Math.exp(-x*x/2);let p=d*t*(0.3193815+t*(-0.3565638+t*(1.781478+t*(-1.8212560+t*1.3302744))));return x>0?1-p:p;}
+const xs=[];for(let i=-35;i<=35;i++)xs.push(i/10);
+const pdfData=xs.map(x=>normalPDF(x));
+const cdfData=xs.map(x=>normalCDF(x));
+const isDark=matchMedia('(prefers-color-scheme:dark)').matches;
+const gridC=isDark?'rgba(255,255,255,0.08)':'rgba(0,0,0,0.06)';
+const txtC=isDark?'#c2c0b6':'#5f5e5a';
+const blueF='rgba(55,138,221,0.25)';const blueS='#378ADD';const tealS='#1D9E75';
+
+const cOpts={responsive:true,maintainAspectRatio:false,animation:{duration:0},plugins:{legend:{display:false},tooltip:{enabled:false}},scales:{x:{type:'linear',grid:{color:gridC},ticks:{color:txtC,font:{size:10},callback:v=>Number.isInteger(v)?v:''},border:{display:false}},y:{grid:{color:gridC},ticks:{color:txtC,font:{size:10}},border:{display:false}}}};
+
+const pdfChart=new Chart(document.getElementById('pdfChart'),{type:'line',data:{labels:xs,datasets:[{data:xs.map((x,i)=>({x,y:pdfData[i]})),borderColor:blueS,borderWidth:2,pointRadius:0,fill:false,tension:0.3},{data:xs.map((x,i)=>({x,y:i<=45?pdfData[i]:null})),borderColor:'transparent',borderWidth:0,pointRadius:0,fill:true,backgroundColor:blueF,tension:0.3,spanGaps:false}]},options:{...cOpts,scales:{...cOpts.scales,y:{...cOpts.scales.y,min:0,max:0.45}}}});
+
+const cdfChart=new Chart(document.getElementById('cdfChart'),{type:'line',data:{labels:xs,datasets:[{data:xs.map((x,i)=>({x,y:cdfData[i]})),borderColor:tealS,borderWidth:2,pointRadius:0,fill:false,tension:0.3},{data:[{x:1,y:normalCDF(1)}],borderColor:tealS,borderWidth:6,pointRadius:6,pointBackgroundColor:tealS,showLine:false,fill:false}]},options:{...cOpts,scales:{...cOpts.scales,y:{...cOpts.scales.y,min:0,max:1.05}}}});
+
+function updatePdfCdf(val){
+  const xv=val/10;
+  document.getElementById('xval').textContent=xv.toFixed(1);
+  const pv=normalPDF(xv),cv=normalCDF(xv);
+  document.getElementById('eq-pdf').textContent='f('+xv.toFixed(1)+') = '+pv.toFixed(3);
+  document.getElementById('eq-cdf').textContent='F('+xv.toFixed(1)+') = P(X ≤ '+xv.toFixed(1)+') = '+cv.toFixed(3);
+  const ci=xs.findIndex(v=>v>=xv);
+  pdfChart.data.datasets[1].data=xs.map((x,i)=>({x,y:i<=ci?pdfData[i]:null}));
+  pdfChart.update();
+  cdfChart.data.datasets[1].data=[{x:xv,y:cv}];
+  cdfChart.update();
+}
+document.getElementById('xslider').addEventListener('input',function(){updatePdfCdf(+this.value);});
+
+/* ===== Gaussian Contours (Canvas) ===== */
+function drawGaussian(canvasId, s11, s22, s12) {
+  const canvas = document.getElementById(canvasId);
+  const ctx = canvas.getContext('2d');
+  const W = canvas.width, H = canvas.height;
+  const cx = W / 2, cy = H / 2;
+
+  const range = Math.max(Math.sqrt(s11), Math.sqrt(s22)) * 3.2;
+  function toSx(x) { return cx + x / range * (W / 2 - 20); }
+  function toSy(y) { return cy - y / range * (H / 2 - 20); }
+
+  ctx.clearRect(0, 0, W, H);
+
+  // Grid
+  ctx.strokeStyle = isDark ? 'rgba(255,255,255,0.08)' : 'rgba(0,0,0,0.06)';
+  ctx.lineWidth = 0.5;
+  ctx.beginPath();
+  ctx.moveTo(toSx(-range), cy); ctx.lineTo(toSx(range), cy);
+  ctx.moveTo(cx, toSy(-range)); ctx.lineTo(cx, toSy(range));
+  ctx.stroke();
+
+  // Axis labels
+  ctx.fillStyle = isDark ? '#a1a1aa' : '#6b6b6b';
+  ctx.font = '11px "Noto Sans KR"';
+  ctx.textAlign = 'center';
+  ctx.fillText('x₁', W - 12, cy + 14);
+  ctx.fillText('x₂', cx + 14, 14);
+
+  // Tick marks
+  ctx.font = '9px "JetBrains Mono"';
+  for (let v = -Math.floor(range); v <= Math.floor(range); v++) {
+    if (v === 0) continue;
+    const sx = toSx(v), sy = toSy(v);
+    ctx.fillText(v, sx, cy + 14);
+    ctx.fillText(v, cx - 14, sy + 3);
+  }
+
+  // Compute eigenvalues and eigenvectors for ellipse
+  const trace = s11 + s22;
+  const det = s11 * s22 - s12 * s12;
+  const disc = Math.sqrt(Math.max(0, trace * trace / 4 - det));
+  const lam1 = trace / 2 + disc;
+  const lam2 = trace / 2 - disc;
+
+  let angle = 0;
+  if (Math.abs(s12) > 1e-10) {
+    angle = Math.atan2(lam1 - s11, s12);
+  } else if (s22 > s11) {
+    angle = Math.PI / 2;
+  }
+
+  // Draw filled density heatmap
+  const imgData = ctx.createImageData(W, H);
+  const invDet = 1 / det;
+  const inv11 = s22 * invDet, inv22 = s11 * invDet, inv12 = -s12 * invDet;
+  const blueR = isDark ? 55 : 55, blueG = isDark ? 138 : 138, blueB = isDark ? 221 : 221;
+
+  for (let px = 0; px < W; px++) {
+    for (let py = 0; py < H; py++) {
+      const x = (px - cx) / (W / 2 - 20) * range;
+      const y = -(py - cy) / (H / 2 - 20) * range;
+      const mahal = x * x * inv11 + 2 * x * y * inv12 + y * y * inv22;
+      const density = Math.exp(-0.5 * mahal);
+      const alpha = density * 0.35;
+      const idx = (py * W + px) * 4;
+      imgData.data[idx] = blueR;
+      imgData.data[idx + 1] = blueG;
+      imgData.data[idx + 2] = blueB;
+      imgData.data[idx + 3] = Math.round(alpha * 255);
+    }
+  }
+  ctx.putImageData(imgData, 0, 0);
+
+  // Re-draw grid on top
+  ctx.strokeStyle = isDark ? 'rgba(255,255,255,0.12)' : 'rgba(0,0,0,0.08)';
+  ctx.lineWidth = 0.5;
+  ctx.beginPath();
+  ctx.moveTo(toSx(-range), cy); ctx.lineTo(toSx(range), cy);
+  ctx.moveTo(cx, toSy(-range)); ctx.lineTo(cx, toSy(range));
+  ctx.stroke();
+
+  // Draw contour ellipses
+  const contourLevels = [1, 2, 3]; // standard deviations
+  const contourAlphas = [0.9, 0.6, 0.35];
+  const a1 = Math.sqrt(lam1), a2 = Math.sqrt(lam2);
+
+  contourLevels.forEach((s, li) => {
+    ctx.strokeStyle = isDark
+      ? 'rgba(133,183,235,' + contourAlphas[li] + ')'
+      : 'rgba(24,95,165,' + contourAlphas[li] + ')';
+    ctx.lineWidth = li === 0 ? 2 : 1.2;
+    ctx.beginPath();
+    for (let i = 0; i <= 100; i++) {
+      const th = 2 * Math.PI * i / 100;
+      const u = s * a1 * Math.cos(th);
+      const v = s * a2 * Math.sin(th);
+      const x = u * Math.cos(angle) - v * Math.sin(angle);
+      const y = u * Math.sin(angle) + v * Math.cos(angle);
+      const sx = toSx(x), sy = toSy(y);
+      if (i === 0) ctx.moveTo(sx, sy); else ctx.lineTo(sx, sy);
+    }
+    ctx.closePath();
+    ctx.stroke();
+  });
+
+  // Center dot
+  ctx.beginPath();
+  ctx.arc(cx, cy, 4, 0, Math.PI * 2);
+  ctx.fillStyle = '#378ADD';
+  ctx.fill();
+
+  // σ labels on contours
+  ctx.fillStyle = isDark ? '#85B7EB' : '#185FA5';
+  ctx.font = '10px "JetBrains Mono"';
+  ctx.textAlign = 'left';
+  contourLevels.forEach((s, li) => {
+    const labelX = s * a1 * Math.cos(angle) * 0.95;
+    const labelY = s * a1 * Math.sin(angle) * 0.95;
+    ctx.fillText(s + 'σ', toSx(labelX) + 4, toSy(labelY) - 4);
+  });
+}
+
+drawGaussian('c1', 1, 1, 0);
+drawGaussian('c2', 1, 4, 0);
+drawGaussian('c3', 1, 1, 0.8);
+drawGaussian('c4', 1, 1, -0.8);
+</script>
+</body>
+</html>
