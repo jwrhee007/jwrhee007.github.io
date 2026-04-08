@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Topic 1. Preliminaries — ML Visual Notes</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+:root{--bg:#fafaf8;--card:#fff;--text:#1a1a1a;--sub:#6b6b6b;--border:#e8e6e1;--accent:#2563eb;--accent2:#0d9488;--code-bg:#f4f3ef;}
+@media(prefers-color-scheme:dark){:root{--bg:#18181b;--card:#27272a;--text:#f0f0ec;--sub:#a1a1aa;--border:#3f3f46;--accent:#60a5fa;--accent2:#2dd4bf;--code-bg:#1f1f23;}}
+body{font-family:'Noto Sans KR',sans-serif;background:var(--bg);color:var(--text);padding:2rem 1.5rem;line-height:1.7;}
+.container{max-width:720px;margin:0 auto;}
+.back{font-size:.85rem;color:var(--sub);text-decoration:none;display:inline-flex;align-items:center;gap:4px;margin-bottom:1.5rem;}
+.back:hover{color:var(--accent);}
+h1{font-size:1.5rem;font-weight:700;margin-bottom:.25rem;}
+.topic-sub{font-size:.9rem;color:var(--sub);margin-bottom:2rem;}
+.vis-section{margin-bottom:3rem;}
+.vis-title{font-size:1.05rem;font-weight:500;margin-bottom:.5rem;padding-left:12px;border-left:3px solid var(--accent);}
+.vis-desc{font-size:.85rem;color:var(--sub);margin-bottom:1rem;}
+.vis-card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:1.5rem;overflow:hidden;}
+svg text{font-family:'Noto Sans KR','Helvetica Neue',sans-serif;}
+.t{font-size:14px;fill:var(--text);}
+.ts{font-size:12px;fill:var(--sub);}
+.th{font-size:14px;fill:var(--text);font-weight:500;}
+.arr{stroke:var(--sub);stroke-width:1.5;}
+.leader{stroke:var(--sub);stroke-width:0.5;stroke-dasharray:4 3;}
+.c-blue rect,.c-blue circle{fill:#E6F1FB;stroke:#185FA5;stroke-width:0.5;} .c-blue .th,.c-blue .t{fill:#0C447C;} .c-blue .ts{fill:#185FA5;}
+.c-teal rect{fill:#E1F5EE;stroke:#0F6E56;stroke-width:0.5;} .c-teal .th,.c-teal .t{fill:#085041;} .c-teal .ts{fill:#0F6E56;}
+.c-coral rect{fill:#FAECE7;stroke:#993C1D;stroke-width:0.5;} .c-coral .th,.c-coral .t{fill:#712B13;} .c-coral .ts{fill:#993C1D;}
+.c-gray rect{fill:#F1EFE8;stroke:#5F5E5A;stroke-width:0.5;} .c-gray .th,.c-gray .t{fill:#444441;} .c-gray .ts{fill:#5F5E5A;}
+@media(prefers-color-scheme:dark){
+  .c-blue rect,.c-blue circle{fill:#0C447C;stroke:#85B7EB;} .c-blue .th,.c-blue .t{fill:#B5D4F4;} .c-blue .ts{fill:#85B7EB;}
+  .c-teal rect{fill:#085041;stroke:#5DCAA5;} .c-teal .th,.c-teal .t{fill:#9FE1CB;} .c-teal .ts{fill:#5DCAA5;}
+  .c-coral rect{fill:#712B13;stroke:#F0997B;} .c-coral .th,.c-coral .t{fill:#F5C4B3;} .c-coral .ts{fill:#F0997B;}
+  .c-gray rect{fill:#444441;stroke:#B4B2A9;} .c-gray .th,.c-gray .t{fill:#D3D1C7;} .c-gray .ts{fill:#B4B2A9;}
+}
+.eq{font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--sub);background:var(--code-bg);padding:4px 10px;border-radius:6px;display:inline-block;}
+.ctrl-row{display:flex;align-items:center;gap:12px;margin-bottom:10px;font-size:13px;color:var(--sub);}
+.ctrl-row input[type=range]{flex:1;height:4px;-webkit-appearance:none;appearance:none;background:var(--border);border-radius:2px;outline:none;}
+.ctrl-row input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:16px;height:16px;border-radius:50%;background:var(--accent);cursor:pointer;}
+.val{font-size:14px;font-weight:500;color:var(--text);min-width:32px;text-align:right;}
+.case-label{font-size:13px;font-weight:500;color:var(--text);text-align:center;margin-bottom:2px;}
+.case-sub{font-size:11px;color:var(--sub);text-align:center;font-family:'JetBrains Mono',monospace;}
+.footer{margin-top:2rem;padding-top:1rem;border-top:1px solid var(--border);font-size:.8rem;color:var(--sub);display:flex;justify-content:space-between;}
+.footer a{color:var(--accent);text-decoration:none;}
+</style>
+</head>
+<body>
+<div class="container">
+<h1>Topic 1. Preliminaries</h1>
+
+<!-- 1. PDF / CDF -->
+<div class="vis-section">
+  <div class="vis-title">PDF와 CDF의 관계</div>
+  <p class="vis-desc">슬라이더로 x를 움직여 보세요. PDF의 음영 면적(적분값)이 곧 CDF의 높이입니다.</p>
+  <div class="vis-card">
+    <div class="ctrl-row">
+      <span>x value</span>
+      <input type="range" id="xslider" min="-30" max="30" value="10" step="1">
+      <span class="val" id="xval">1.0</span>
+    </div>
+    <div style="display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap;">
+      <span class="eq" id="eq-pdf">f(1.0) = 0.242</span>
+      <span class="eq" id="eq-cdf">F(1.0) = P(X ≤ 1.0) = 0.841</span>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+      <div>
+        <div class="case-label">PDF  f(x)</div>
+        <div style="position:relative;height:190px;"><canvas id="pdfChart"></canvas></div>
+      </div>
+      <div>
+        <div class="case-label">CDF  F(x) = ∫f(t)dt</div>
+        <div style="position:relative;height:190px;"><canvas id="cdfChart"></canvas></div>
+      </div>
+    </div>
+    <div style="display:flex;justify-content:center;gap:16px;margin-top:10px;">
+      <span class="eq">CDF = ∫₋∞ˣ f(t) dt</span>
+      <span class="eq">PDF = dF/dx</span>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<script>
+/* ===== PDF/CDF Interactive ===== */
+function normalPDF(x){return Math.exp(-0.5*x*x)/Math.sqrt(2*Math.PI);}
+function normalCDF(x){let t=1/(1+0.2316419*Math.abs(x));let d=0.3989422804*Math.exp(-x*x/2);let p=d*t*(0.3193815+t*(-0.3565638+t*(1.781478+t*(-1.8212560+t*1.3302744))));return x>0?1-p:p;}
+const xs=[];for(let i=-35;i<=35;i++)xs.push(i/10);
+const pdfData=xs.map(x=>normalPDF(x));
+const cdfData=xs.map(x=>normalCDF(x));
+const isDark=matchMedia('(prefers-color-scheme:dark)').matches;
+const gridC=isDark?'rgba(255,255,255,0.08)':'rgba(0,0,0,0.06)';
+const txtC=isDark?'#c2c0b6':'#5f5e5a';
+const blueF='rgba(55,138,221,0.25)';const blueS='#378ADD';const tealS='#1D9E75';
+
+const cOpts={responsive:true,maintainAspectRatio:false,animation:{duration:0},plugins:{legend:{display:false},tooltip:{enabled:false}},scales:{x:{type:'linear',grid:{color:gridC},ticks:{color:txtC,font:{size:10},callback:v=>Number.isInteger(v)?v:''},border:{display:false}},y:{grid:{color:gridC},ticks:{color:txtC,font:{size:10}},border:{display:false}}}};
+
+const pdfChart=new Chart(document.getElementById('pdfChart'),{type:'line',data:{labels:xs,datasets:[{data:xs.map((x,i)=>({x,y:pdfData[i]})),borderColor:blueS,borderWidth:2,pointRadius:0,fill:false,tension:0.3},{data:xs.map((x,i)=>({x,y:i<=45?pdfData[i]:null})),borderColor:'transparent',borderWidth:0,pointRadius:0,fill:true,backgroundColor:blueF,tension:0.3,spanGaps:false}]},options:{...cOpts,scales:{...cOpts.scales,y:{...cOpts.scales.y,min:0,max:0.45}}}});
+
+const cdfChart=new Chart(document.getElementById('cdfChart'),{type:'line',data:{labels:xs,datasets:[{data:xs.map((x,i)=>({x,y:cdfData[i]})),borderColor:tealS,borderWidth:2,pointRadius:0,fill:false,tension:0.3},{data:[{x:1,y:normalCDF(1)}],borderColor:tealS,borderWidth:6,pointRadius:6,pointBackgroundColor:tealS,showLine:false,fill:false}]},options:{...cOpts,scales:{...cOpts.scales,y:{...cOpts.scales.y,min:0,max:1.05}}}});
+
+function updatePdfCdf(val){
+  const xv=val/10;
+  document.getElementById('xval').textContent=xv.toFixed(1);
+  const pv=normalPDF(xv),cv=normalCDF(xv);
+  document.getElementById('eq-pdf').textContent='f('+xv.toFixed(1)+') = '+pv.toFixed(3);
+  document.getElementById('eq-cdf').textContent='F('+xv.toFixed(1)+') = P(X ≤ '+xv.toFixed(1)+') = '+cv.toFixed(3);
+  const ci=xs.findIndex(v=>v>=xv);
+  pdfChart.data.datasets[1].data=xs.map((x,i)=>({x,y:i<=ci?pdfData[i]:null}));
+  pdfChart.update();
+  cdfChart.data.datasets[1].data=[{x:xv,y:cv}];
+  cdfChart.update();
+}
+document.getElementById('xslider').addEventListener('input',function(){updatePdfCdf(+this.value);});
+
+/* ===== Gaussian Contours ===== */
+function makeEllipse(sx,sy,rho,nPts){
+  const datasets=[];
+  const colors=['rgba(55,138,221,0.9)','rgba(55,138,221,0.5)','rgba(55,138,221,0.25)'];
+  const scales=[1,1.6,2.3];
+  for(let li=0;li<3;li++){
+    const pts=[];const s=scales[li];
+    for(let i=0;i<=nPts;i++){
+      const th=2*Math.PI*i/nPts;
+      const ct=Math.cos(th),st=Math.sin(th);
+      const x=s*(sx*ct);
+      const y=s*(rho*sx*ct+sy*Math.sqrt(1-rho*rho)*st);
+      pts.push({x,y});
+    }
+    datasets.push({data:pts,borderColor:colors[li],borderWidth:li===0?2:1.2,pointRadius:0,fill:false,tension:0});
+  }
+  datasets.push({data:[{x:0,y:0}],pointRadius:5,pointBackgroundColor:'#378ADD',showLine:false});
+  return datasets;
+}
+function createGaussChart(id,sx,sy,rho){
+  const lim=Math.max(sx,sy)*3;
+  new Chart(document.getElementById(id),{type:'scatter',data:{datasets:makeEllipse(sx,sy,rho,80)},options:{responsive:true,maintainAspectRatio:false,animation:{duration:0},plugins:{legend:{display:false},tooltip:{enabled:false}},scales:{x:{min:-lim,max:lim,grid:{color:gridC},ticks:{color:txtC,font:{size:10},stepSize:Math.ceil(lim/2)},border:{display:false},title:{display:true,text:'x₁',color:txtC,font:{size:11}}},y:{min:-lim,max:lim,grid:{color:gridC},ticks:{color:txtC,font:{size:10},stepSize:Math.ceil(lim/2)},border:{display:false},title:{display:true,text:'x₂',color:txtC,font:{size:11}}}},aspectRatio:1}});
+}
+createGaussChart('c1',1,1,0);
+createGaussChart('c2',1,2,0);
+createGaussChart('c3',1,1,0.8);
+createGaussChart('c4',1,1,-0.8);
+</script>
+</body>
+</html>
