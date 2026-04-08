@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Topic 2. Supervised Learning & ERM — ML Visual Notes</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+:root{--bg:#fafaf8;--card:#fff;--text:#1a1a1a;--sub:#6b6b6b;--border:#e8e6e1;--accent:#2563eb;--accent2:#0d9488;--code-bg:#f4f3ef;}
+@media(prefers-color-scheme:dark){:root{--bg:#18181b;--card:#27272a;--text:#f0f0ec;--sub:#a1a1aa;--border:#3f3f46;--accent:#60a5fa;--accent2:#2dd4bf;--code-bg:#1f1f23;}}
+body{font-family:'Noto Sans KR',sans-serif;background:var(--bg);color:var(--text);padding:2rem 1.5rem;line-height:1.7;}
+.container{max-width:720px;margin:0 auto;}
+.back{font-size:.85rem;color:var(--sub);text-decoration:none;display:inline-flex;align-items:center;gap:4px;margin-bottom:1.5rem;}.back:hover{color:var(--accent);}
+h1{font-size:1.5rem;font-weight:700;margin-bottom:.25rem;}
+.topic-sub{font-size:.9rem;color:var(--sub);margin-bottom:2rem;}
+.vis-section{margin-bottom:3rem;}
+.vis-title{font-size:1.05rem;font-weight:500;margin-bottom:.5rem;padding-left:12px;border-left:3px solid var(--accent);}
+.vis-desc{font-size:.85rem;color:var(--sub);margin-bottom:1rem;}
+.vis-card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:1.5rem;overflow:hidden;}
+svg text{font-family:'Noto Sans KR','Helvetica Neue',sans-serif;}
+.t{font-size:14px;fill:var(--text);}.ts{font-size:12px;fill:var(--sub);}.th{font-size:14px;fill:var(--text);font-weight:500;}
+.c-blue rect{fill:#E6F1FB;stroke:#185FA5;stroke-width:0.5;} .c-blue .th{fill:#0C447C;} .c-blue .ts{fill:#185FA5;}
+.c-teal rect{fill:#E1F5EE;stroke:#0F6E56;stroke-width:0.5;} .c-teal .th{fill:#085041;} .c-teal .ts{fill:#0F6E56;}
+.c-coral rect{fill:#FAECE7;stroke:#993C1D;stroke-width:0.5;} .c-coral .th{fill:#712B13;} .c-coral .ts{fill:#993C1D;}
+.c-gray rect{fill:#F1EFE8;stroke:#5F5E5A;stroke-width:0.5;} .c-gray .th{fill:#444441;} .c-gray .ts{fill:#5F5E5A;}
+.c-purple rect{fill:#EEEDFE;stroke:#534AB7;stroke-width:0.5;} .c-purple .th{fill:#3C3489;} .c-purple .ts{fill:#534AB7;}
+.c-amber rect{fill:#FAEEDA;stroke:#854F0B;stroke-width:0.5;} .c-amber .th{fill:#633806;} .c-amber .ts{fill:#854F0B;}
+@media(prefers-color-scheme:dark){
+.c-blue rect{fill:#0C447C;stroke:#85B7EB;} .c-blue .th{fill:#B5D4F4;} .c-blue .ts{fill:#85B7EB;}
+.c-teal rect{fill:#085041;stroke:#5DCAA5;} .c-teal .th{fill:#9FE1CB;} .c-teal .ts{fill:#5DCAA5;}
+.c-coral rect{fill:#712B13;stroke:#F0997B;} .c-coral .th{fill:#F5C4B3;} .c-coral .ts{fill:#F0997B;}
+.c-gray rect{fill:#444441;stroke:#B4B2A9;} .c-gray .th{fill:#D3D1C7;} .c-gray .ts{fill:#B4B2A9;}
+.c-purple rect{fill:#3C3489;stroke:#AFA9EC;} .c-purple .th{fill:#CECBF6;} .c-purple .ts{fill:#AFA9EC;}
+.c-amber rect{fill:#633806;stroke:#EF9F27;} .c-amber .th{fill:#FAC775;} .c-amber .ts{fill:#EF9F27;}
+}
+.eq{font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--sub);background:var(--code-bg);padding:4px 10px;border-radius:6px;display:inline-block;}
+.legend-row{display:flex;gap:16px;font-size:12px;color:var(--sub);margin-bottom:8px;flex-wrap:wrap;}
+.legend-dot{width:10px;height:10px;border-radius:2px;display:inline-block;vertical-align:middle;margin-right:4px;}
+.footer{margin-top:2rem;padding-top:1rem;border-top:1px solid var(--border);font-size:.8rem;color:var(--sub);display:flex;justify-content:space-between;}
+.footer a{color:var(--accent);text-decoration:none;}
+</style>
+</head>
+<body>
+<div class="container">
+<a href="index.html" class="back">← 목차로 돌아가기</a>
+<h1>Topic 2. Supervised Learning & ERM</h1>
+<p class="topic-sub">손실 함수, True/Empirical Risk, Overfitting, Error 분해</p>
+
+<!-- 1. Model Complexity U-curve -->
+<div class="vis-section">
+  <div class="vis-title">Model Complexity vs Error (U-curve)</div>
+  <p class="vis-desc">모델이 복잡해질수록 training error는 계속 줄지만, test error(true risk)는 U자 형태를 그립니다. 최적 복잡도가 존재합니다.</p>
+  <div class="vis-card">
+    <div class="legend-row">
+      <span><span class="legend-dot" style="background:#378ADD;"></span>True risk R(h)</span>
+      <span><span class="legend-dot" style="background:#D85A30;"></span>Empirical risk L(h;D)</span>
+    </div>
+    <div style="position:relative;height:280px;"><canvas id="ucurve"></canvas></div>
+  </div>
+</div>
+
+<!-- 2. Overfitting illustration -->
+<div class="vis-section">
+  <div class="vis-title">Overfitting vs 적절한 모델</div>
+  <p class="vis-desc">왼쪽: 데이터를 외워버리는 과적합 함수 (Empirical risk = 0이지만 일반화 불가). 오른쪽: 적절한 복잡도의 모델.</p>
+  <div class="vis-card">
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
+      <div><div style="font-size:13px;font-weight:500;text-align:center;margin-bottom:4px;color:var(--text);">Overfitting (H 너무 큼)</div><div style="position:relative;height:200px;"><canvas id="overfit"></canvas></div></div>
+      <div><div style="font-size:13px;font-weight:500;text-align:center;margin-bottom:4px;color:var(--text);">Good fit (적절한 H)</div><div style="position:relative;height:200px;"><canvas id="goodfit"></canvas></div></div>
+    </div>
+  </div>
+</div>
+
+<!-- 3. Excess Error decomposition -->
+<div class="vis-section">
+  <div class="vis-title">Excess Error 분해</div>
+  <p class="vis-desc">Excess Error = Estimation Error + Approximation Error. H를 키우면 Approximation Error는 줄지만 Estimation Error가 커집니다.</p>
+  <div class="vis-card">
+    <svg width="100%" viewBox="0 0 680 300">
+      <defs><marker id="a2" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M2 1L8 5L2 9" fill="none" stroke="context-stroke" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></marker></defs>
+      <!-- Full bar: Excess Error -->
+      <g class="c-gray"><rect x="40" y="30" width="600" height="50" rx="8"/><text class="th" x="340" y="60" text-anchor="middle" dominant-baseline="central">Excess Error:  R(ĥ*_H) − R*</text></g>
+      <line x1="340" y1="80" x2="200" y2="110" stroke="var(--sub)" stroke-width="0.8" marker-end="url(#a2)"/>
+      <line x1="340" y1="80" x2="480" y2="110" stroke="var(--sub)" stroke-width="0.8" marker-end="url(#a2)"/>
+      <!-- Estimation Error -->
+      <g class="c-coral"><rect x="60" y="115" width="280" height="56" rx="8"/><text class="th" x="200" y="136" text-anchor="middle" dominant-baseline="central">Estimation error</text><text class="ts" x="200" y="156" text-anchor="middle" dominant-baseline="central">R(ĥ*_H) − R*_H</text></g>
+      <!-- Approximation Error -->
+      <g class="c-blue"><rect x="380" y="115" width="240" height="56" rx="8"/><text class="th" x="500" y="136" text-anchor="middle" dominant-baseline="central">Approximation error</text><text class="ts" x="500" y="156" text-anchor="middle" dominant-baseline="central">R*_H − R*</text></g>
+      <!-- Descriptions -->
+      <g class="c-coral"><rect x="60" y="195" width="280" height="80" rx="8"/><text class="ts" x="200" y="218" text-anchor="middle" dominant-baseline="central">유한한 데이터로 인한 오차</text><text class="ts" x="200" y="238" text-anchor="middle" dominant-baseline="central">n → ∞ 이면 0으로 수렴</text><text class="ts" x="200" y="258" text-anchor="middle" dominant-baseline="central">H가 크면 증가 ↑</text></g>
+      <g class="c-blue"><rect x="380" y="195" width="240" height="80" rx="8"/><text class="ts" x="500" y="218" text-anchor="middle" dominant-baseline="central">H 제한으로 인한 오차</text><text class="ts" x="500" y="238" text-anchor="middle" dominant-baseline="central">H를 키우면 감소 ↓</text><text class="ts" x="500" y="258" text-anchor="middle" dominant-baseline="central">H가 작으면 증가 ↑</text></g>
+    </svg>
+  </div>
+</div>
+
+<!-- 4. ERM Pipeline -->
+<div class="vis-section">
+  <div class="vis-title">Supervised Learning 전체 흐름</div>
+  <p class="vis-desc">데이터 수집 → Hypothesis Class 선택 → Loss 정의 → ERM으로 학습 → 일반화 평가</p>
+  <div class="vis-card">
+    <svg width="100%" viewBox="0 0 680 340">
+      <defs><marker id="a3" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M2 1L8 5L2 9" fill="none" stroke="context-stroke" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></marker></defs>
+      <g class="c-gray"><rect x="250" y="10" width="180" height="44" rx="8"/><text class="th" x="340" y="36" text-anchor="middle" dominant-baseline="central">D = {(xᵢ, yᵢ)} ~ P_XY</text></g>
+      <line x1="340" y1="54" x2="340" y2="80" stroke="var(--sub)" stroke-width="1" marker-end="url(#a3)"/>
+      <g class="c-blue"><rect x="220" y="85" width="240" height="44" rx="8"/><text class="th" x="340" y="107" text-anchor="middle" dominant-baseline="central">Hypothesis class H 선택</text></g>
+      <line x1="340" y1="129" x2="340" y2="155" stroke="var(--sub)" stroke-width="1" marker-end="url(#a3)"/>
+      <g class="c-teal"><rect x="220" y="160" width="240" height="44" rx="8"/><text class="th" x="340" y="182" text-anchor="middle" dominant-baseline="central">Loss function ℓ 정의</text></g>
+      <line x1="340" y1="204" x2="340" y2="230" stroke="var(--sub)" stroke-width="1" marker-end="url(#a3)"/>
+      <g class="c-purple"><rect x="190" y="235" width="300" height="44" rx="8"/><text class="th" x="340" y="257" text-anchor="middle" dominant-baseline="central">ERM: ĥ = argmin L(h; D)</text></g>
+      <line x1="340" y1="279" x2="340" y2="300" stroke="var(--sub)" stroke-width="1" marker-end="url(#a3)"/>
+      <g class="c-amber"><rect x="200" y="295" width="280" height="36" rx="8"/><text class="ts" x="340" y="317" text-anchor="middle" dominant-baseline="central">Generalization 평가: R(ĥ) vs L(ĥ; D)</text></g>
+      <!-- Side annotations -->
+      <text class="ts" x="475" y="107" text-anchor="start">선형? 트리? 신경망?</text>
+      <text class="ts" x="475" y="182" text-anchor="start">0-1 / Squared / Absolute</text>
+      <text class="ts" x="505" y="257" text-anchor="start">Training</text>
+    </svg>
+  </div>
+</div>
+
+<div class="footer">
+  <a href="topic1.html">← Topic 1</a>
+  <a href="topic3.html">Topic 3 →</a>
+</div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<script>
+const isDark=matchMedia('(prefers-color-scheme:dark)').matches;
+const gridC=isDark?'rgba(255,255,255,0.08)':'rgba(0,0,0,0.06)';
+const txtC=isDark?'#c2c0b6':'#5f5e5a';
+
+/* U-curve */
+const cx=[];for(let i=1;i<=50;i++)cx.push(i);
+const trueRisk=cx.map(x=>{const t=x/50;return 0.8*Math.exp(-3*t)+0.15+0.6*t*t;});
+const empRisk=cx.map(x=>{const t=x/50;return 0.9*Math.exp(-4*t)+0.02;});
+const minIdx=trueRisk.indexOf(Math.min(...trueRisk));
+
+new Chart(document.getElementById('ucurve'),{type:'line',data:{labels:cx,datasets:[
+  {data:trueRisk,borderColor:'#378ADD',borderWidth:2.5,pointRadius:0,fill:false,tension:0.4,label:'True risk'},
+  {data:empRisk,borderColor:'#D85A30',borderWidth:2,borderDash:[6,3],pointRadius:0,fill:false,tension:0.4,label:'Empirical risk'},
+  {data:cx.map((_,i)=>i===minIdx?trueRisk[i]:null),pointRadius:8,pointBackgroundColor:'#378ADD',showLine:false,pointStyle:'circle'}
+]},options:{responsive:true,maintainAspectRatio:false,animation:{duration:0},plugins:{legend:{display:false},tooltip:{enabled:false},
+  annotation:{}
+},scales:{x:{grid:{color:gridC},ticks:{color:txtC,font:{size:10},callback:(v,i)=>i===0?'Low':i===49?'High':''},border:{display:false},title:{display:true,text:'Model complexity →',color:txtC,font:{size:12}}},
+y:{grid:{color:gridC},ticks:{color:txtC,font:{size:10},callback:()=>''},border:{display:false},title:{display:true,text:'Error →',color:txtC,font:{size:12}},min:0}}}});
+
+/* Overfitting vs Good fit */
+const seed=[1.2,2.8,1.8,3.5,2.2,4.1,3.0,5.0,3.8,5.5];
+const dataX=[0.5,1,1.5,2,2.5,3,3.5,4,4.5,5];
+const dataY=seed;
+const trueFunc=dataX.map(x=>0.8*x+0.8);
+
+function makeScatter(canvasId,curvePts,curveColor,curveDash){
+  new Chart(document.getElementById(canvasId),{type:'scatter',data:{datasets:[
+    {data:dataX.map((x,i)=>({x,y:dataY[i]})),pointRadius:5,pointBackgroundColor:isDark?'#f0f0ec':'#1a1a1a',showLine:false},
+    {data:curvePts,borderColor:curveColor,borderWidth:2,borderDash:curveDash||[],pointRadius:0,showLine:true,fill:false,tension:0.4},
+    {data:dataX.map(x=>({x,y:0.8*x+0.8})),borderColor:isDark?'rgba(255,255,255,0.2)':'rgba(0,0,0,0.15)',borderWidth:1,borderDash:[4,4],pointRadius:0,showLine:true,fill:false,tension:0.3}
+  ]},options:{responsive:true,maintainAspectRatio:false,animation:{duration:0},plugins:{legend:{display:false},tooltip:{enabled:false}},scales:{x:{min:0,max:5.5,grid:{color:gridC},ticks:{display:false},border:{display:false}},y:{min:0,max:7,grid:{color:gridC},ticks:{display:false},border:{display:false}}}}});
+}
+
+const overfitCurve=[];
+for(let i=0;i<100;i++){const x=0.3+i*0.048;let y=0.8*x+0.8;for(let j=0;j<dataX.length;j++){const dx=x-dataX[j];y+=dataY[j]*0.3*Math.exp(-8*dx*dx)-0.3*(0.8*dataX[j]+0.8)*Math.exp(-8*dx*dx);}overfitCurve.push({x,y});}
+const goodCurve=[];
+for(let i=0;i<100;i++){const x=0.3+i*0.048;goodCurve.push({x,y:0.8*x+0.8+0.15*Math.sin(x*1.5)});}
+
+makeScatter('overfit',overfitCurve,'#E24B4A');
+makeScatter('goodfit',goodCurve,'#1D9E75');
+</script>
+</body>
+</html>
