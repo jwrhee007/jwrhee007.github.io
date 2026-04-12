@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Topic 2. Supervised Learning & ERM — ML Visual Notes</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+:root{--bg:#fafaf8;--card:#fff;--text:#1a1a1a;--sub:#6b6b6b;--border:#e8e6e1;--accent:#2563eb;--accent2:#0d9488;--code-bg:#f4f3ef;}
+@media(prefers-color-scheme:dark){:root{--bg:#18181b;--card:#27272a;--text:#f0f0ec;--sub:#a1a1aa;--border:#3f3f46;--accent:#60a5fa;--accent2:#2dd4bf;--code-bg:#1f1f23;}}
+body{font-family:'Noto Sans KR',sans-serif;background:var(--bg);color:var(--text);padding:2rem 1.5rem;line-height:1.7;}
+.container{max-width:720px;margin:0 auto;}
+.back{font-size:.85rem;color:var(--sub);text-decoration:none;display:inline-flex;align-items:center;gap:4px;margin-bottom:1.5rem;}.back:hover{color:var(--accent);}
+h1{font-size:1.5rem;font-weight:700;margin-bottom:.25rem;}
+.topic-sub{font-size:.9rem;color:var(--sub);margin-bottom:2rem;}
+.vis-section{margin-bottom:3rem;}
+.vis-title{font-size:1.05rem;font-weight:500;margin-bottom:.5rem;padding-left:12px;border-left:3px solid var(--accent);}
+.vis-desc{font-size:.85rem;color:var(--sub);margin-bottom:1rem;}
+.vis-card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:1.5rem;overflow:hidden;}
+svg text{font-family:'Noto Sans KR','Helvetica Neue',sans-serif;}
+.t{font-size:14px;fill:var(--text);}.ts{font-size:12px;fill:var(--sub);}.th{font-size:14px;fill:var(--text);font-weight:500;}
+.c-blue rect{fill:#E6F1FB;stroke:#185FA5;stroke-width:0.5;} .c-blue .th{fill:#0C447C;} .c-blue .ts{fill:#185FA5;}
+.c-teal rect{fill:#E1F5EE;stroke:#0F6E56;stroke-width:0.5;} .c-teal .th{fill:#085041;} .c-teal .ts{fill:#0F6E56;}
+.c-coral rect{fill:#FAECE7;stroke:#993C1D;stroke-width:0.5;} .c-coral .th{fill:#712B13;} .c-coral .ts{fill:#993C1D;}
+.c-gray rect{fill:#F1EFE8;stroke:#5F5E5A;stroke-width:0.5;} .c-gray .th{fill:#444441;} .c-gray .ts{fill:#5F5E5A;}
+.c-purple rect{fill:#EEEDFE;stroke:#534AB7;stroke-width:0.5;} .c-purple .th{fill:#3C3489;} .c-purple .ts{fill:#534AB7;}
+.c-amber rect{fill:#FAEEDA;stroke:#854F0B;stroke-width:0.5;} .c-amber .th{fill:#633806;} .c-amber .ts{fill:#854F0B;}
+@media(prefers-color-scheme:dark){
+.c-blue rect{fill:#0C447C;stroke:#85B7EB;} .c-blue .th{fill:#B5D4F4;} .c-blue .ts{fill:#85B7EB;}
+.c-teal rect{fill:#085041;stroke:#5DCAA5;} .c-teal .th{fill:#9FE1CB;} .c-teal .ts{fill:#5DCAA5;}
+.c-coral rect{fill:#712B13;stroke:#F0997B;} .c-coral .th{fill:#F5C4B3;} .c-coral .ts{fill:#F0997B;}
+.c-gray rect{fill:#444441;stroke:#B4B2A9;} .c-gray .th{fill:#D3D1C7;} .c-gray .ts{fill:#B4B2A9;}
+.c-purple rect{fill:#3C3489;stroke:#AFA9EC;} .c-purple .th{fill:#CECBF6;} .c-purple .ts{fill:#AFA9EC;}
+.c-amber rect{fill:#633806;stroke:#EF9F27;} .c-amber .th{fill:#FAC775;} .c-amber .ts{fill:#EF9F27;}
+}
+.eq{font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--sub);background:var(--code-bg);padding:4px 10px;border-radius:6px;display:inline-block;}
+.legend-row{display:flex;gap:16px;font-size:12px;color:var(--sub);margin-bottom:8px;flex-wrap:wrap;}
+.legend-dot{width:10px;height:10px;border-radius:2px;display:inline-block;vertical-align:middle;margin-right:4px;}
+.footer{margin-top:2rem;padding-top:1rem;border-top:1px solid var(--border);font-size:.8rem;color:var(--sub);display:flex;justify-content:space-between;}
+.footer a{color:var(--accent);text-decoration:none;}
+</style>
+</head>
+<body>
+<div class="container">
+<h1>Topic 2. Supervised Learning & ERM</h1>
+
+<!-- 1. Model Complexity U-curve -->
+<div class="vis-section">
+  <div class="vis-title">Model Complexity vs Error (U-curve)</div>
+  <p class="vis-desc">모델이 복잡해질수록 training error는 계속 줄지만, test error(true risk)는 U자 형태를 그립니다. 최적 복잡도가 존재합니다.</p>
+  <div class="vis-card">
+    <div class="legend-row">
+      <span><span class="legend-dot" style="background:#378ADD;"></span>True risk R(h)</span>
+      <span><span class="legend-dot" style="background:#D85A30;"></span>Empirical risk L(h;D)</span>
+    </div>
+    <div style="position:relative;height:280px;"><canvas id="ucurve"></canvas></div>
+  </div>
+</div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<script>
+const isDark=matchMedia('(prefers-color-scheme:dark)').matches;
+const gridC=isDark?'rgba(255,255,255,0.08)':'rgba(0,0,0,0.06)';
+const txtC=isDark?'#c2c0b6':'#5f5e5a';
+
+/* U-curve */
+const cx=[];for(let i=1;i<=50;i++)cx.push(i);
+const trueRisk=cx.map(x=>{const t=x/50;return 0.8*Math.exp(-3*t)+0.15+0.6*t*t;});
+const empRisk=cx.map(x=>{const t=x/50;return 0.9*Math.exp(-4*t)+0.02;});
+const minIdx=trueRisk.indexOf(Math.min(...trueRisk));
+
+new Chart(document.getElementById('ucurve'),{type:'line',data:{labels:cx,datasets:[
+  {data:trueRisk,borderColor:'#378ADD',borderWidth:2.5,pointRadius:0,fill:false,tension:0.4,label:'True risk'},
+  {data:empRisk,borderColor:'#D85A30',borderWidth:2,borderDash:[6,3],pointRadius:0,fill:false,tension:0.4,label:'Empirical risk'},
+  {data:cx.map((_,i)=>i===minIdx?trueRisk[i]:null),pointRadius:8,pointBackgroundColor:'#378ADD',showLine:false,pointStyle:'circle'}
+]},options:{responsive:true,maintainAspectRatio:false,animation:{duration:0},plugins:{legend:{display:false},tooltip:{enabled:false},
+  annotation:{}
+},scales:{x:{grid:{color:gridC},ticks:{color:txtC,font:{size:10},callback:(v,i)=>i===0?'Low':i===49?'High':''},border:{display:false},title:{display:true,text:'Model complexity →',color:txtC,font:{size:12}}},
+y:{grid:{color:gridC},ticks:{color:txtC,font:{size:10},callback:()=>''},border:{display:false},title:{display:true,text:'Error →',color:txtC,font:{size:12}},min:0}}}});
+
+/* Overfitting vs Good fit */
+const seed=[1.2,2.8,1.8,3.5,2.2,4.1,3.0,5.0,3.8,5.5];
+const dataX=[0.5,1,1.5,2,2.5,3,3.5,4,4.5,5];
+const dataY=seed;
+const trueFunc=dataX.map(x=>0.8*x+0.8);
+
+function makeScatter(canvasId,curvePts,curveColor,curveDash){
+  new Chart(document.getElementById(canvasId),{type:'scatter',data:{datasets:[
+    {data:dataX.map((x,i)=>({x,y:dataY[i]})),pointRadius:5,pointBackgroundColor:isDark?'#f0f0ec':'#1a1a1a',showLine:false},
+    {data:curvePts,borderColor:curveColor,borderWidth:2,borderDash:curveDash||[],pointRadius:0,showLine:true,fill:false,tension:0.4},
+    {data:dataX.map(x=>({x,y:0.8*x+0.8})),borderColor:isDark?'rgba(255,255,255,0.2)':'rgba(0,0,0,0.15)',borderWidth:1,borderDash:[4,4],pointRadius:0,showLine:true,fill:false,tension:0.3}
+  ]},options:{responsive:true,maintainAspectRatio:false,animation:{duration:0},plugins:{legend:{display:false},tooltip:{enabled:false}},scales:{x:{min:0,max:5.5,grid:{color:gridC},ticks:{display:false},border:{display:false}},y:{min:0,max:7,grid:{color:gridC},ticks:{display:false},border:{display:false}}}}});
+}
+
+const overfitCurve=[];
+for(let i=0;i<100;i++){const x=0.3+i*0.048;let y=0.8*x+0.8;for(let j=0;j<dataX.length;j++){const dx=x-dataX[j];y+=dataY[j]*0.3*Math.exp(-8*dx*dx)-0.3*(0.8*dataX[j]+0.8)*Math.exp(-8*dx*dx);}overfitCurve.push({x,y});}
+const goodCurve=[];
+for(let i=0;i<100;i++){const x=0.3+i*0.048;goodCurve.push({x,y:0.8*x+0.8+0.15*Math.sin(x*1.5)});}
+
+makeScatter('overfit',overfitCurve,'#E24B4A');
+makeScatter('goodfit',goodCurve,'#1D9E75');
+</script>
+</body>
+</html>
